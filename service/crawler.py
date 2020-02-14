@@ -33,7 +33,7 @@ class Crawler:
     def run(self):
         while True:
             self.crawler()
-            time.sleep(60)
+            time.sleep(300)
 
     def crawler(self):
         while True:
@@ -42,6 +42,9 @@ class Crawler:
                 r = self.session.get(url='https://3g.dxy.cn/newh5/view/pneumonia')
             except requests.exceptions.ChunkedEncodingError:
                 continue
+            except requests.exceptions.ConnectionError:
+                logger.warn("Server Disconnected.")
+                break
             soup = BeautifulSoup(r.content, 'lxml')
 
             overall_information = re.search(r'\{("id".*?)\]\}', str(soup.find('script', attrs={'id': 'getStatisticsService'})))
